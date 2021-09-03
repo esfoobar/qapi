@@ -1,8 +1,8 @@
-# Quart Postgres Boilerplate
+# Quart Pets API
 
-![Code Check](https://github.com/esfoobar/qapie/workflows/Code%20Checks/badge.svg)
+![Code Check](https://github.com/esfoobar/qapi/workflows/Code%20Checks/badge.svg)
 
-This is a boilerplate for a Quart app that can run as a Poetry, Heroku or Docker application. Requires `python 3.7` or higher.
+The Quart Pets API application. Requires `python 3.7` or higher.
 
 ## Local Development
 
@@ -19,18 +19,18 @@ This is a boilerplate for a Quart app that can run as a Poetry, Heroku or Docker
 
 ### Setting up the database and user for the application
 
-Usually, we need to create a database for the application we’re writing and a user to access the database. For this example, we will use “counter_user” for the user and “counter_password” for the password, and we will create “counter” as the database.
+Usually, we need to create a database for the application we’re writing and a user to access the database. For this example, we will use “qapi_user” for the user and “qapi_password” for the password, and we will create “qaqpi” as the database.
 
 - Login to Postgres
-- Create the user and password: `CREATE ROLE counter_user WITH LOGIN PASSWORD 'counter_password';`
-- Give it database creation permissions: `ALTER ROLE counter_user CREATEDB;`
+- Create the user and password: `CREATE ROLE qapi_user WITH LOGIN PASSWORD 'qapi_password';`
+- Give it database creation permissions: `ALTER ROLE qapi_user CREATEDB;`
 - Now list the users on the database: `\du`
 - Exit using `\q`
-- Now login using the new user: `psql postgres -Ucounter_user`
-- Create the `counter` database: `CREATE DATABASE counter;`
+- Now login using the new user: `psql postgres qapi_user`
+- Create the `qaqpi` database: `CREATE DATABASE qaqpi;`
 - List the databases with: `\l`
-- You should see the `counter` owned by `counter_user`.
-- You can connect to the database using `\connect counter;` or `\c counter` and list the tables using `\dt;`.
+- You should see the `qaqpi` owned by `qapi_user`.
+- You can connect to the database using `\connect qaqpi;` or `\c qaqpi` and list the tables using `\dt;`.
 
 ### Install Poetry
 
@@ -41,7 +41,7 @@ Usually, we need to create a database for the application we’re writing and a 
 ### First Migration
 
 - Run the first migration with `poetry run alembic upgrade head`
-  - Subsequent migrations after models changes can be run with `pipenv run alembic revision --autogenerate -m "added counter table field"` with [some caveats](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
+  - Subsequent migrations after models changes can be run with `pipenv run alembic revision --autogenerate -m "added qaqpi table field"` with [some caveats](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
 
 ### Running the application
 
@@ -72,9 +72,9 @@ Usually, we need to create a database for the application we’re writing and a 
   - Run `poetry install`
   - Rebuild the Codespace container for changes to be applied
   - After rebuild:
-    - Run `poetry shell` 
+    - Run `poetry shell`
     - Do `which python` and set that as the Python interpreter
     - Do the first migration: `alembic upgrade head`
 - To run the application: `poetry quart run`
   - The codespace will give you a private URL for your application
-- To connect to Postgres Database: `psql -h localhost -Ucounter_user postgres`
+- To connect to Postgres Database: `psql -h localhost -Uqapi_user postgres`
