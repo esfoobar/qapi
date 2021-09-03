@@ -18,11 +18,13 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=on
 RUN pip3 install poetry
 
 # set "qchat_app" as the working directory from which CMD, RUN, ADD references
-WORKDIR /counter_app
+WORKDIR /qapi_app
 
 # setup poetry
-COPY poetry.lock pyproject.toml /counter_app/
-RUN poetry install --no-interaction
+COPY poetry.lock pyproject.toml /qapi_app/
+RUN poetry config virtualenvs.create true \
+    && poetry config virtualenvs.in-project false \
+    && poetry install --no-interaction
 
 # now copy all the files in this directory to /code
 COPY . .
