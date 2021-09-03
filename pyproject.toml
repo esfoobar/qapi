@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "quart-pg-boilerplate"
+name = "qapi"
 version = "0.1.0"
 description = ""
 authors = ["Jorge Escobar <j@jorge3.com>"]
