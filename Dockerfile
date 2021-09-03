@@ -22,7 +22,9 @@ WORKDIR /qapi_app
 
 # setup poetry
 COPY poetry.lock pyproject.toml /qapi_app/
-RUN poetry install --no-interaction
+RUN poetry config virtualenvs.create true \
+    && poetry config virtualenvs.in-project false \
+    && poetry install --no-interaction
 
 # now copy all the files in this directory to /code
 COPY . .
