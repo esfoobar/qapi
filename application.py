@@ -13,10 +13,10 @@ def create_app(**config_overrides):
     app.config.update(config_overrides)
 
     # import blueprints
-    from counter.views import counter_app
+    from app.views import app_app
 
     # register blueprints
-    app.register_blueprint(counter_app)
+    app.register_blueprint(app_app)
 
     @app.before_serving
     async def create_db_conn():

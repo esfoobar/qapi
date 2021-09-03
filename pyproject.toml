@@ -14,7 +14,9 @@ alembic = "1.6.5"
 psycopg2-binary = "2.9.1"
 databases = {version = "0.4.1", extras = ["postgresql"]}
 sqlalchemy = "1.4"
-passlib = "1.7.1"
+passlib = "1.7.4"
+marshmallow = "3.13.0"
+webargs = "8.0.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.910"

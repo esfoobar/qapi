@@ -1,10 +1,19 @@
-from sqlalchemy import Table, Column, Integer
+from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
 
 from db import metadata
 
-counter_table = Table(
-    "counter",
+
+app_table = Table(
+    "app",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("count", Integer),
+    Column("secret", String(80)),
+)
+
+app_access_table = Table(
+    "app_access",
+    metadata,
+    Column("app_id", Integer, ForeignKey("app.id")),
+    Column("token", String(35)),
+    Column("expires", DateTime(timezone=True)),
 )
