@@ -70,7 +70,7 @@ Usually, we need to create a database for the application we’re writing and a 
 - Start the Codespace
 - First time:
   - Run `poetry install`
-  - Rebuild the Codespace container for changes to be applied
+  - Restart the Codespace editor for changes to be applied
   - After rebuild:
     - Run `poetry shell`
     - Do `which python` and set that as the Python interpreter
