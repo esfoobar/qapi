@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from app.models import app_table, app_access_table
 from .schemas import AppSchema
-from utils.quartparser import get_params
+from utils.quartparser import get_json_payload
 
 
 class AppAPI(MethodView):
@@ -16,27 +16,29 @@ class AppAPI(MethodView):
 
     async def post(self):
         app_schema = AppSchema()
-        params = await get_params(request, app_schema)
+        json_data = await get_json_payload(request, app_schema)
+        pass
 
-        # if not "app_id" in request.json or not "app_secret" in request.json:
-        #     error = {"code": "MISSING_APP_ID_OR_APP_SECRET"}
-        #     return jsonify({"error": error}), 400
         # existing_app = App.objects.filter(
         #     app_id=request.json.get("app_id")
         # ).first()
+        app_query = app_table.select().where(app_table.c.name == json_data)
+        user_row = await conn.fetch_one(query=user_query)
+
         # if existing_app:
         #     error = {"code": "APP_ID_ALREADY_EXISTS"}
         #     return jsonify({"error": error}), 400
         # else:
-        #     # create the credentials
-        #     salt = bcrypt.gensalt()
-        #     hashed_password = bcrypt.hashpw(
-        #         request.json.get("app_secret"), salt
-        #     )
-        #     app = App(
-        #         app_id=request.json.get("app_id"), app_secret=hashed_password
-        #     ).save()
-        if params:
+        # create the credentials
+        # salt = bcrypt.gensalt()
+        # hashed_password = bcrypt.hashpw(
+        #     request.json.get("app_secret"), salt
+        # )
+        # app = App(
+        #     app_id=request.json.get("app_id"), app_secret=hashed_password
+        # ).save()
+
+        if json_data:
             return jsonify({"result": "ok"})
 
 

@@ -8,9 +8,9 @@ if TYPE_CHECKING:
     from marshmallow.schema import Schema
 
 
-async def get_params(request: "Request", schema: "Schema") -> dict:
+async def get_json_payload(request: "Request", schema: "Schema") -> dict:
     try:
-        params = schema.load(await request.get_json())
+        json_payload = schema.load(await request.get_json())
         pass
     except ValidationError as err:
         abort(
@@ -18,4 +18,4 @@ async def get_params(request: "Request", schema: "Schema") -> dict:
             status=400,
         )
 
-    return params
+    return json_payload
