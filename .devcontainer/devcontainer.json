@@ -15,9 +15,9 @@
 				"previewLimit": 50,
 				"server": "localhost",
 				"port": 5432,
-				"database": "counter",
-				"username": "counter_user",
-				"password": "counter_password"
+				"database": "qapi",
+				"username": "qapi_user",
+				"password": "qapi_password"
 			}
 		],
 		"python.pythonPath": "/usr/local/bin/python",
