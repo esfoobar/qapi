@@ -10,10 +10,6 @@ from utils.quartparser import get_json_payload
 
 
 class AppAPI(MethodView):
-    def __init__(self):
-        if not request.json:
-            abort(400)
-
     async def post(self):
         app_schema = AppSchema()
         json_data = await get_json_payload(request, app_schema)
