@@ -7,7 +7,7 @@ from marshmallow import (
 from typing import Optional
 
 
-def check_spaces(data: str) -> Optional["ValidationError"]:
+def check_spaces(data: str):
     if " " in data:
         raise ValidationError("No space allowed in name or secret")
 

@@ -14,7 +14,9 @@ async def get_json_payload(request: "Request", schema: "Schema") -> dict:
         json_payload = schema.load(await request.get_json())
         pass
     except ValidationError as err:
-        response = await make_response(jsonify(fail(err.messages)), 400)
+        response = await make_response(
+            jsonify(fail(field_errors=err.messages)), 400
+        )
         abort(response)
 
     return json_payload

@@ -27,7 +27,7 @@ class AppAPI(MethodView):
 
         if existing_app:
             error_code = "APP_ID_ALREADY_EXISTS"
-            return fail(error_code), 400
+            return fail(error_code=error_code), 400
         else:
             # create the credentials
             hash: str = pbkdf2_sha256.hash(json_data["secret"])
