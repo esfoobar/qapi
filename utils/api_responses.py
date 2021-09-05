@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, Any
 
 
 def success(data: dict) -> dict:
@@ -7,7 +7,8 @@ def success(data: dict) -> dict:
 
 
 def fail(
-    error_code: Optional[str] = None, field_errors: Optional[dict] = None
+    error_code: Optional[str] = None,
+    field_errors: Optional[Dict[Any, Any]] = None,
 ) -> dict:
     data: Dict[str, Union[str, dict]] = {}
     data["result"] = "error"
