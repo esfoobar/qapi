@@ -6,6 +6,8 @@ def success(data: dict) -> dict:
     return data
 
 
-def fail(data: dict) -> dict:
+def fail(error_code: str) -> dict:
+    data = {}
     data["result"] = "error"
+    data["error_code"] = error_code
     return data

@@ -26,8 +26,8 @@ class AppAPI(MethodView):
         existing_app = await conn.fetch_one(query=app_query)
 
         if existing_app:
-            error = {"message": "APP_ID_ALREADY_EXISTS"}
-            return fail(error), 400
+            error_code = "APP_ID_ALREADY_EXISTS"
+            return fail(error_code), 400
         else:
             # create the credentials
             hash: str = pbkdf2_sha256.hash(json_data["secret"])
