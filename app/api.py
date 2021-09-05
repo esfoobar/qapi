@@ -22,8 +22,10 @@ class AppAPI(MethodView):
         # existing_app = App.objects.filter(
         #     app_id=request.json.get("app_id")
         # ).first()
-        app_query = app_table.select().where(app_table.c.name == json_data)
-        user_row = await conn.fetch_one(query=user_query)
+
+        # check is app exists
+        # app_query = app_table.select().where(app_table.c.name == json_data)
+        # user_row = await conn.fetch_one(query=user_query)
 
         # if existing_app:
         #     error = {"code": "APP_ID_ALREADY_EXISTS"}
