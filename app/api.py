@@ -27,7 +27,7 @@ class AppAPI(MethodView):
 
         if existing_app:
             error = {"message": "APP_ID_ALREADY_EXISTS"}
-            return fail(error)
+            return fail(error), 400
         else:
             # create the credentials
             hash: str = pbkdf2_sha256.hash(json_data["secret"])
@@ -36,7 +36,7 @@ class AppAPI(MethodView):
             )
             await conn.execute(query=app_insert)
 
-        return success({})
+        return success({}), 201
 
 
 class AccessAPI(MethodView):

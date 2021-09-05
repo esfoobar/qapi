@@ -1,13 +1,11 @@
 from typing import Optional
-from quart import Response
-from typing import Optional
 
 
-def success(data: dict, status: Optional[int] = 200) -> "Response":
+def success(data: dict) -> dict:
     data["result"] = "ok"
-    return Response(data, status=status)
+    return data
 
 
-def fail(data: dict, status: Optional[int] = 400) -> "Response":
+def fail(data: dict) -> dict:
     data["result"] = "error"
-    return Response(data, status=status)
+    return data
