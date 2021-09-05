@@ -1,6 +1,23 @@
-from marshmallow import Schema, fields
+from marshmallow import (
+    Schema,
+    fields,
+    validate,
+    ValidationError,
+)
+from typing import Optional
+
+
+def check_spaces(data: str) -> Optional["ValidationError"]:
+    if " " in data:
+        raise ValidationError("No space allowed in name or secret")
 
 
 class AppSchema(Schema):
-    name = fields.Str(required=True)
-    secret = fields.Str(required=True)
+    name = fields.Str(
+        validate=[check_spaces, validate.Length(min=5, max=80)], required=True
+    )
+    secret = fields.Str(
+        validate=[check_spaces, validate.Length(min=3, max=80)],
+        required=True,
+        load_only=True,
+    )

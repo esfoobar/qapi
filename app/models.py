@@ -7,8 +7,8 @@ app_table = Table(
     "app",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("name", String(80)),
-    Column("secret", String(80)),
+    Column("name", String(80), index=True, unique=True),
+    Column("secret", String(87)),
 )
 
 app_access_table = Table(
