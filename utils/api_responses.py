@@ -9,7 +9,7 @@ def success(data: dict) -> dict:
 def fail(
     error_code: Optional[str] = None, field_errors: Optional[dict] = None
 ) -> dict:
-    data: Dict[str, Union[str, dict]]
+    data: Dict[str, Union[str, dict]] = {}
     data["result"] = "error"
     if error_code:
         data["error_code"] = error_code
