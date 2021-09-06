@@ -8,7 +8,7 @@ services:
       - ./:/qapi_app
     links:
       - db:postgres
-    container_name: qapi_web_1
+    container_name: app_web_1
     depends_on:
       - db
     stdin_open: true
@@ -24,7 +24,7 @@ services:
   db:
     image: postgres:13-alpine
     restart: always
-    container_name: qapi_db_1
+    container_name: app_db_1
     ports:
       - "5432:5432"
     environment:

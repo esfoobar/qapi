@@ -70,11 +70,9 @@ Usually, we need to create a database for the application we’re writing and a 
 - Start the Codespace
 - First time:
   - Run `poetry install`
-  - Restart the VSCode for changes to be applied
-  - After rebuild:
-    - Run `poetry shell`
-    - Do `which python` and set that as the Python interpreter
-    - Do the first migration: `alembic upgrade head`
+  - Restart VSCode for changes to be applied
+  - After restart:
+    - Do the first migration: `poetry alembic upgrade head`
 - To run the application: `poetry quart run`
   - The codespace will give you a private URL for your application
 - To connect to Postgres Database: `psql -h localhost -Uapp_user postgres`

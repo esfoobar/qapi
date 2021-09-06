@@ -6,16 +6,20 @@
     {
       "label": "Run Black Formatter",
       "type": "shell",
-      "command": "poetry black",
+      "command": "poetry",
       "args": [
+        "run",
+        "black",
         "."
       ]
     },
     {
       "label": "Run Myoy Linting",
       "type": "shell",
-      "command": "poetry mypy",
+      "command": "poetry",
       "args": [
+        "run",
+        "mypy",
         "--ignore-missing-imports",
         "."
       ]
