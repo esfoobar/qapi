@@ -1,26 +1,44 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Run Black Formatter",
-        "type": "shell",
-        "command": "black",
-        "args": ["."]
-      },
-      {
-        "label": "Start PostgreSQL Mac",
-        "type": "shell",
-        "command": "pg_ctl",
-        "args": ["-D", "/usr/local/var/postgres", "start"]
-      },
-      {
-        "label": "Stop PostgreSQL Mac",
-        "type": "shell",
-        "command": "pg_ctl",
-        "args": ["-D", "/usr/local/var/postgres", "stop"]
-      }
-    ]
-  }
-  
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Black Formatter",
+      "type": "shell",
+      "command": "poetry black",
+      "args": [
+        "."
+      ]
+    },
+    {
+      "label": "Run Myoy Linting",
+      "type": "shell",
+      "command": "poetry mypy",
+      "args": [
+        "--ignore-missing-imports",
+        "."
+      ]
+    },
+    {
+      "label": "Start PostgreSQL Mac",
+      "type": "shell",
+      "command": "pg_ctl",
+      "args": [
+        "-D",
+        "/usr/local/var/postgres",
+        "start"
+      ]
+    },
+    {
+      "label": "Stop PostgreSQL Mac",
+      "type": "shell",
+      "command": "pg_ctl",
+      "args": [
+        "-D",
+        "/usr/local/var/postgres",
+        "stop"
+      ]
+    }
+  ]
+}

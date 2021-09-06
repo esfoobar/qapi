@@ -22,9 +22,9 @@ jobs:
         image: postgres
         # Provide the password for postgres
         env:
-          POSTGRES_USER: counter_user
-          POSTGRES_PASSWORD: counter_password
-          POSTGRES_DB: counter
+          POSTGRES_USER: app_user
+          POSTGRES_PASSWORD: app_password
+          POSTGRES_DB: app
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: venv-${{ runner.os }}-v2-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
           
       - name: Install dependencies
         run: poetry install
@@ -75,6 +75,6 @@ jobs:
         run: poetry run pytest -s
         env:
           QUART_ENV: testing
-          DB_USERNAME: counter_user
-          DB_PASSWORD: counter_password
+          DB_USERNAME: app_user
+          DB_PASSWORD: app_password
           DB_HOST: localhost

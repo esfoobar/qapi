@@ -17,10 +17,10 @@ services:
       PORT: 5000
       SECRET_KEY: "you-will-never-guess"
       DEBUG: 1 # can't pass True here, but 1 works
-      DB_USERNAME: qapi_user
-      DB_PASSWORD: qapi_password
+      DB_USERNAME: app_user
+      DB_PASSWORD: app_password
       DB_HOST: postgres
-      DATABASE_NAME: qapi
+      DATABASE_NAME: app
   db:
     image: postgres:13-alpine
     restart: always
@@ -28,6 +28,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: qapi_user
-      POSTGRES_PASSWORD: qapi_password
-      POSTGRES_DB: qapi
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+      POSTGRES_DB: app
