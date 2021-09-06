@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: .venv
-          key: venv-${{ env.GITHUB_REPOSITORY }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          key: venv-${{ GITHUB_REPOSITORY }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
           
       - name: Install dependencies
         run: poetry install
