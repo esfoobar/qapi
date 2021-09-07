@@ -13,7 +13,7 @@ def create_app(**config_overrides):
     app.config.update(config_overrides)
 
     # import blueprints
-    from app.views import app_app
+    from app.routes import app_app
 
     # register blueprints
     app.register_blueprint(app_app)
