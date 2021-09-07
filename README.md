@@ -19,18 +19,18 @@ The Quart Pets API application. Requires `python 3.7` or higher.
 
 ### Setting up the database and user for the application
 
-Usually, we need to create a database for the application we’re writing and a user to access the database. For this example, we will use “qapi_user” for the user and “qapi_password” for the password, and we will create “qaqpi” as the database.
+Usually, we need to create a database for the application we’re writing and a user to access the database. For this example, we will use “app_user” for the user and “app_password” for the password, and we will create “app” as the database.
 
 - Login to Postgres
-- Create the user and password: `CREATE ROLE qapi_user WITH LOGIN PASSWORD 'qapi_password';`
-- Give it database creation permissions: `ALTER ROLE qapi_user CREATEDB;`
+- Create the user and password: `CREATE ROLE app_user WITH LOGIN PASSWORD 'app_password';`
+- Give it database creation permissions: `ALTER ROLE app_user CREATEDB;`
 - Now list the users on the database: `\du`
 - Exit using `\q`
-- Now login using the new user: `psql postgres qapi_user`
-- Create the `qaqpi` database: `CREATE DATABASE qaqpi;`
+- Now login using the new user: `psql postgres app_user`
+- Create the `app` database: `CREATE DATABASE app;`
 - List the databases with: `\l`
-- You should see the `qaqpi` owned by `qapi_user`.
-- You can connect to the database using `\connect qaqpi;` or `\c qaqpi` and list the tables using `\dt;`.
+- You should see the `app` owned by `app_user`.
+- You can connect to the database using `\connect app;` or `\c app` and list the tables using `\dt;`.
 
 ### Install Poetry
 
@@ -41,7 +41,7 @@ Usually, we need to create a database for the application we’re writing and a 
 ### First Migration
 
 - Run the first migration with `poetry run alembic upgrade head`
-  - Subsequent migrations after models changes can be run with `pipenv run alembic revision --autogenerate -m "added qaqpi table field"` with [some caveats](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
+  - Subsequent migrations after models changes can be run with `pipenv run alembic revision --autogenerate -m "added app table field"` with [some caveats](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
 
 ### Running the application
 
@@ -70,11 +70,9 @@ Usually, we need to create a database for the application we’re writing and a 
 - Start the Codespace
 - First time:
   - Run `poetry install`
-  - Rebuild the Codespace container for changes to be applied
-  - After rebuild:
-    - Run `poetry shell`
-    - Do `which python` and set that as the Python interpreter
-    - Do the first migration: `alembic upgrade head`
-- To run the application: `poetry quart run`
+  - Restart VSCode for changes to be applied
+  - After restart:
+    - Do the first migration: `poetry run alembic upgrade head`
+- To run the application: `poetry run quart run`
   - The codespace will give you a private URL for your application
-- To connect to Postgres Database: `psql -h localhost -Uqapi_user postgres`
+- To connect to Postgres Database: `psql -h localhost -Uapp_user postgres`
