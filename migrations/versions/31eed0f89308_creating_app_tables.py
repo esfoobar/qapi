@@ -1,8 +1,8 @@
-"""create qapi tables
+"""creating app tables
 
-Revision ID: 4ab7213b325d
+Revision ID: 31eed0f89308
 Revises: 
-Create Date: 2021-09-05 16:44:46.007069
+Create Date: 2021-09-08 19:21:12.866289
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "4ab7213b325d"
+revision = "31eed0f89308"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,7 @@ def upgrade():
         "app_access",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("app_id", sa.Integer(), nullable=True),
-        sa.Column("token", sa.String(length=35), nullable=True),
+        sa.Column("token", sa.String(length=36), nullable=True),
         sa.Column("expires", sa.DateTime(timezone=True), nullable=True),
         sa.ForeignKeyConstraint(
             ["app_id"],

@@ -2,7 +2,7 @@
 name: Code Checks
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
   schedule:
     - cron: "0 0 * * *"
 
@@ -60,19 +60,19 @@ jobs:
         with:
           path: /tmp/.cache/venv/${{ matrix.python-version }}
           key: venv-${{ github.repository }}-${{ matrix.python-version }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-      
+
       - name: Install dependencies
         run: poetry install
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'     
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
 
       - name: Run Black
         run: |
           poetry run black --check --line-length=80 .
-        
+
       - name: Run mypy
         run: |
-          poetry run mypy --ignore-missing-imports .   
-      
+          poetry run mypy --ignore-missing-imports .
+
       - name: Run tests
         run: |
           poetry run pytest
