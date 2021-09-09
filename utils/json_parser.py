@@ -15,7 +15,10 @@ async def get_json_payload(request: "Request", schema: "Schema") -> dict:
         pass
     except ValidationError as err:
         response = await make_response(
-            jsonify(fail(field_errors=err.messages)), 400
+            jsonify(
+                fail(error_code="MALFORMED_DATA", field_errors=err.messages)
+            ),
+            400,
         )
         abort(response)
 
