@@ -4,19 +4,18 @@ from marshmallow import (
     validate,
     ValidationError,
 )
-from typing import Optional
 
 
 def check_spaces(data: str):
     if " " in data:
-        raise ValidationError("No space allowed in name or secret")
+        raise ValidationError("No space allowed")
 
 
 class AppSchema(Schema):
-    name = fields.Str(
+    app_id = fields.Str(
         validate=[check_spaces, validate.Length(min=5, max=80)], required=True
     )
-    secret = fields.Str(
+    app_secret = fields.Str(
         validate=[check_spaces, validate.Length(min=3, max=80)],
         required=True,
         load_only=True,

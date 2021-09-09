@@ -4,8 +4,6 @@ from passlib.hash import pbkdf2_sha256
 import uuid
 from datetime import datetime, timedelta
 
-from sqlalchemy.sql.expression import select
-
 from app.models import app_table, app_access_table
 from .schemas import AppSchema
 from utils.json_parser import get_json_payload
@@ -21,7 +19,7 @@ class AppAPI(MethodView):
 
         # check is app exists
         app_query = app_table.select().where(
-            app_table.c.name == json_data["name"]
+            app_table.c.name == json_data["app_id"]
         )
         existing_app = await conn.fetch_one(query=app_query)
 
@@ -30,9 +28,9 @@ class AppAPI(MethodView):
             return fail(error_code=error_code), 400
         else:
             # create the credentials
-            hash: str = pbkdf2_sha256.hash(json_data["secret"])
+            hash: str = pbkdf2_sha256.hash(json_data["app_secret"])
             app_insert = app_table.insert().values(
-                name=json_data["name"], secret=hash
+                name=json_data["app_id"], secret=hash
             )
             await conn.execute(query=app_insert)
 
@@ -40,32 +38,44 @@ class AppAPI(MethodView):
 
 
 class AccessAPI(MethodView):
-    def post(self):
-        pass
+    async def post(self):
+        conn = current_app.dbc  # typing: ignore
 
+        app_schema = AppSchema()
+        json_data = await get_json_payload(request, app_schema)
 
-#         if not "app_id" in request.json or not "app_secret" in request.json:
-#             error = {"code": "MISSING_APP_ID_OR_APP_SECRET"}
-#             return jsonify({"error": error}), 400
+        app_query = app_table.select().where(
+            app_table.c.name == json_data["app_id"]
+        )
+        app = await conn.fetch_one(query=app_query)
 
-#         app = App.objects.filter(app_id=request.json.get("app_id")).first()
-#         if not app:
-#             error = {"code": "INCORRECT_CREDENTIALS"}
-#             return jsonify({"error": error}), 403
-#         else:
-#             # generate a token
-#             if (
-#                 bcrypt.hashpw(request.json.get("app_secret"), app.app_secret)
-#                 == app.app_secret
-#             ):
-#                 # delete existing tokens
-#                 existing_tokens = Access.objects.filter(app=app).delete()
-#                 token = str(uuid.uuid4())
-#                 now = datetime.utcnow().replace(second=0, microsecond=0)
-#                 expires = now + timedelta(days=30)
-#                 access = Access(app=app, token=token, expires=expires).save()
-#                 expires_3339 = expires.isoformat("T") + "Z"
-#                 return jsonify({"token": token, "expires": expires_3339}), 200
-#             else:
-#                 error = {"code": "INCORRECT_CREDENTIALS"}
-#                 return jsonify({"error": error}), 403
+        if not app:
+            error_code = "INCORRECT_CREDENTIALS"
+            return fail(error_code=error_code), 403
+        else:
+            # generate a token
+            if pbkdf2_sha256.verify(json_data["app_secret"], app.get("secret")):
+                # delete existing tokens
+                stmt = app_access_table.delete().where(
+                    app_access_table.c.app_id == app.get("id")
+                )
+                result = await conn.execute(stmt)
+
+                # set the token
+                token = str(uuid.uuid4())
+                now = datetime.utcnow().replace(second=0, microsecond=0)
+                expires = now + timedelta(days=30)
+
+                # insert access token in db
+                access_insert = app_access_table.insert().values(
+                    app_id=app["id"], token=token, expires=expires
+                )
+                result = await conn.execute(query=access_insert)
+
+                # convert satetime to ISO
+                expires_3339 = expires.isoformat("T") + "Z"
+
+                return success({"token": token, "expires": expires_3339}), 200
+            else:
+                error_code = "INCORRECT_CREDENTIALS"
+                return fail(error_code=error_code), 403

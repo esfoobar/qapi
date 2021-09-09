@@ -15,7 +15,7 @@ def create_app_tables(create_db):
 
 
 def app_dict():
-    return dict(name="myapp", secret="test123")
+    return dict(app_id="myapp", app_secret="test123")
 
 
 @pytest.mark.asyncio

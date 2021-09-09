@@ -1,4 +1,11 @@
-from sqlalchemy import Table, Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import (
+    Table,
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+)
 
 from db import metadata
 
@@ -16,6 +23,6 @@ app_access_table = Table(
     metadata,
     Column("id", Integer, primary_key=True),
     Column("app_id", Integer, ForeignKey("app.id")),
-    Column("token", String(35)),
+    Column("token", String(36)),
     Column("expires", DateTime(timezone=True)),
 )
