@@ -1,10 +1,10 @@
 from quart.views import MethodView
-from quart import current_app, request, jsonify
+from quart import current_app, request
 from passlib.hash import pbkdf2_sha256
 import uuid
 from datetime import datetime, timedelta
 
-from app.models import app_table, app_access_table
+from .models import app_table, app_access_table
 from .schemas import AppSchema
 from utils.json_parser import get_json_payload
 from utils.api_responses import success, fail

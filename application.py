@@ -14,9 +14,11 @@ def create_app(**config_overrides):
 
     # import blueprints
     from app.routes import app_app
+    from store.routes import store_app
 
     # register blueprints
     app.register_blueprint(app_app)
+    app.register_blueprint(store_app)
 
     @app.before_serving
     async def create_db_conn():

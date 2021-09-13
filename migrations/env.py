@@ -29,6 +29,7 @@ fileConfig(config.config_file_name)
 from db import metadata
 
 from app.models import *
+from store.models import *
 
 target_metadata = metadata
 
