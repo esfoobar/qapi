@@ -16,8 +16,12 @@ class StoreAPI(MethodView):
         json_data = await get_json_payload(request, store_schema)
 
         # store in the database
-        uid: str = str(uuid.uuid4())
+        json_data["uid"]: str = str(uuid.uuid4())
         store_insert = store_table.insert().values(dict(json_data))
         await conn.execute(query=store_insert)
 
-        return success({}), 201
+        store_json = {"store": json_data}
+        links_json = [{"href": f"/store/{ json_data['uid'] }", "rel": "self"}]
+
+        response = {"store": json_data, "_links": links_json}
+        return success(response), 201
