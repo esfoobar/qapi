@@ -7,9 +7,13 @@ from .models import store_table
 from .schemas import StoreSchema
 from utils.json_parser import get_json_payload
 from utils.api_responses import success, fail
+from app.decorators import app_required
 
 
 class StoreAPI(MethodView):
+
+    decorators = [app_required]
+
     async def post(self):
         conn = current_app.dbc  # type: ignore
 
