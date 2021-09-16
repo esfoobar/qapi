@@ -11,7 +11,7 @@ from utils.api_responses import success, fail
 
 class StoreAPI(MethodView):
     async def post(self):
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         store_schema = StoreSchema()
         json_data = await get_json_payload(request, store_schema)
@@ -31,7 +31,7 @@ class StoreAPI(MethodView):
 
     @staticmethod
     async def _get_store(uid: str) -> Optional[dict]:
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         store_query = store_table.select().where(
             (store_table.c.uid == uid) & (store_table.c.live == True)
