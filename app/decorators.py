@@ -33,6 +33,6 @@ def app_required(f):
         ):  # per https://stackoverflow.com/a/24666683
             return jsonify({"error": "TOKEN_EXPIRED"}), 403
 
-        return f(*args, **kwargs)
+        return await f(*args, **kwargs)
 
     return decorated_function
