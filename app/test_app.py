@@ -72,7 +72,7 @@ async def test_app_token_generation(
     assert token is not None
 
     # define token query for reuse
-    # remember to sqlalchemy.select instead of app_table.select when doing joins
+    # remember to use sqlalchemy.select instead of app_table.select when doing joins
     app_access_query = select([app_access_table.c.id, app_table.c.id]).where(
         (app_access_table.c.app_id == app_table.c.id)
         & (app_table.c.name == app_dict()["app_id"])

@@ -41,7 +41,7 @@ Usually, we need to create a database for the application we’re writing and a 
 ### First Migration
 
 - Run the first migration with `poetry run alembic upgrade head`
-  - Subsequent migrations after models changes can be run with `pipenv run alembic revision --autogenerate -m "added app table field"` with [some caveats](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
+  - Subsequent migrations after models changes can be run with `poetry run alembic revision --autogenerate -m "added app table field"` with [some caveats](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
 
 ### Running the application
 

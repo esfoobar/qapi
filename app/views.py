@@ -1,10 +1,10 @@
 from quart.views import MethodView
-from quart import current_app, request, jsonify
+from quart import current_app, request
 from passlib.hash import pbkdf2_sha256
 import uuid
 from datetime import datetime, timedelta
 
-from app.models import app_table, app_access_table
+from .models import app_table, app_access_table
 from .schemas import AppSchema
 from utils.json_parser import get_json_payload
 from utils.api_responses import success, fail
@@ -12,7 +12,7 @@ from utils.api_responses import success, fail
 
 class AppAPI(MethodView):
     async def post(self):
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         app_schema = AppSchema()
         json_data = await get_json_payload(request, app_schema)
@@ -39,7 +39,7 @@ class AppAPI(MethodView):
 
 class AccessAPI(MethodView):
     async def post(self):
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         app_schema = AppSchema()
         json_data = await get_json_payload(request, app_schema)
