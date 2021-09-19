@@ -23,12 +23,10 @@ store_app.add_url_rule(
     ],
 )
 
-# store_app.add_url_rule(
-#     "/stores/<store_id>",
-#     view_func=store_view,
-#     methods=[
-#         "GET",
-#         "PUT",
-#         "DELETE",
-#     ],
-# )
+store_app.add_url_rule(
+    "/stores/<store_id>",
+    view_func=store_view,
+    methods=[
+        "GET",
+    ],
+)

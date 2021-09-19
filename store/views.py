@@ -7,12 +7,15 @@ from .models import store_table
 from .schemas import StoreSchema
 from utils.json_parser import get_json_payload
 from utils.api_responses import success, fail
+from app.decorators import app_required
 
 
 class StoreAPI(MethodView):
+
+    decorators = [app_required]
+
     def __init__(self):
         self.STORES_PER_PAGE = 10
-        self.PETS_PER_PAGE = 10
         if (
             request.method != "GET" and request.method != "DELETE"
         ) and not request.json:
@@ -61,7 +64,7 @@ class StoreAPI(MethodView):
     #     return jsonify(response), 200
 
     async def post(self):
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         store_schema = StoreSchema()
         json_data = await get_json_payload(request, store_schema)
@@ -81,7 +84,7 @@ class StoreAPI(MethodView):
 
     @staticmethod
     async def _get_store(uid: str) -> Optional[dict]:
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         store_query = store_table.select().where(
             (store_table.c.uid == uid) & (store_table.c.live == True)

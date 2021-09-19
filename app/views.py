@@ -12,7 +12,7 @@ from utils.api_responses import success, fail
 
 class AppAPI(MethodView):
     async def post(self):
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         app_schema = AppSchema()
         json_data = await get_json_payload(request, app_schema)
@@ -39,7 +39,7 @@ class AppAPI(MethodView):
 
 class AccessAPI(MethodView):
     async def post(self):
-        conn = current_app.dbc  # typing: ignore
+        conn = current_app.dbc  # type: ignore
 
         app_schema = AppSchema()
         json_data = await get_json_payload(request, app_schema)
