@@ -2,6 +2,7 @@ from quart.views import MethodView
 from quart import current_app, request
 import uuid
 from typing import Optional
+from sqlalchemy import select
 
 from .models import store_table
 from .schemas import StoreSchema
@@ -28,36 +29,38 @@ class StoreAPI(MethodView):
                 return success(response), 200
             else:
                 return {}, 404
+        else:
+            conn = current_app.dbc  # type: ignore
 
-    # else:
-    #     page = int(request.args.get("page", 1))
-    #     stores_query = (
-    #         store_table.select()
-    #         .where(store_table.c.live == True)
-    #         .offset(page - 1)
-    #         .limit(self.STORES_PER_PAGE)
-    #     )
-
-    #     response = {
-    #         "result": "ok",
-    #         "links": [{"href": "/stores/?page=%s" % page, "rel": "self"}],
-    #         "stores": stores_obj(stores),
-    #     }
-    #     if stores.has_prev:
-    #         response["links"].append(
-    #             {
-    #                 "href": "/stores/?page=%s" % (stores.prev_num),
-    #                 "rel": "previous",
-    #             }
-    #         )
-    #     if stores.has_next:
-    #         response["links"].append(
-    #             {
-    #                 "href": "/stores/?page=%s" % (stores.next_num),
-    #                 "rel": "next",
-    #             }
-    #         )
-    #     return jsonify(response), 200
+            page = int(request.args.get("page", 1))
+            stores_query = (
+                select(store_table)
+                .where(store_table.c.live == True)
+                .offset(page - 1)
+                .limit(self.STORES_PER_PAGE)
+            )
+            stores_records = await conn.fetch_all(query=stores_query)
+            pass
+            # response = {
+            #     "result": "ok",
+            #     "links": [{"href": "/stores/?page=%s" % page, "rel": "self"}],
+            #     "stores": stores_obj(stores),
+            # }
+            # if stores.has_prev:
+            #     response["links"].append(
+            #         {
+            #             "href": "/stores/?page=%s" % (stores.prev_num),
+            #             "rel": "previous",
+            #         }
+            #     )
+            # if stores.has_next:
+            #     response["links"].append(
+            #         {
+            #             "href": "/stores/?page=%s" % (stores.next_num),
+            #             "rel": "next",
+            #         }
+            #     )
+            # return jsonify(response), 200
 
     async def post(self):
         conn = current_app.dbc  # type: ignore
