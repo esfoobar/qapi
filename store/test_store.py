@@ -57,3 +57,21 @@ async def test_store_creation(
     body = await response.json
     assert response.status_code == 201
     assert body["store"]["zip_code"] == store_dict()["zip_code"]
+
+    # create store without tokens
+    response = await create_test_client.post(
+        "/stores/", json=store_dict(), headers={}
+    )
+    body = await response.json
+    assert response.status_code == 403
+
+    # create store with wrong tokens
+    headers = {
+        "X-APP-ID": _create_app_headers["X-APP-ID"],
+        "X-APP-TOKEN": "wrong-token",
+    }
+    response = await create_test_client.post(
+        "/stores/", json=store_dict(), headers=headers
+    )
+    body = await response.json
+    assert response.status_code == 403
