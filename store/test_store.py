@@ -75,7 +75,7 @@ async def test_store_creation(
     )
     body = await response.json
     assert response.status_code == 403
-
+    
 
 @pytest.mark.asyncio
 async def test_store_get(
