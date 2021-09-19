@@ -7,7 +7,7 @@ from app.models import app_table, app_access_table
 
 # Create this tests' tables
 @pytest.fixture
-def create_app_tables(create_db):
+def create_test_tables(create_db):
     print("Creating Test Tables")
     engine = create_engine(create_db["DB_URI"])
     metadata.bind = engine
@@ -19,7 +19,7 @@ def app_dict():
 
 
 @pytest.mark.asyncio
-async def test_app_creation(create_test_client, create_app_tables):
+async def test_app_creation(create_test_client, create_test_tables):
     # basic create
     response = await create_test_client.post("/apps/", json=app_dict())
     body = await response.json
@@ -54,7 +54,7 @@ async def test_app_creation(create_test_client, create_app_tables):
 
 @pytest.mark.asyncio
 async def test_app_token_generation(
-    create_test_app, create_test_client, create_app_tables
+    create_test_app, create_test_client, create_test_tables
 ):
     # create app
     response = await create_test_client.post("/apps/", json=app_dict())
