@@ -75,3 +75,45 @@ async def test_store_creation(
     )
     body = await response.json
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_store_get(
+    create_test_client, create_test_tables, _create_app_headers
+):
+    # create store
+    response = await create_test_client.post(
+        "/stores/", json=store_dict(), headers=_create_app_headers
+    )
+    body = await response.json
+    store = body["store"]
+
+    # get the store
+    response = await create_test_client.get(
+        f"/stores/{store['uid']}",
+        json=store_dict(),
+        headers=_create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert body["store"]["uid"] == store["uid"]
+
+    # not found store
+    response = await create_test_client.get(
+        f"/stores/not-found",
+        json=store_dict(),
+        headers=_create_app_headers,
+    )
+    assert response.status_code == 404
+
+    # bad credentials
+    headers = {
+        "X-APP-ID": _create_app_headers["X-APP-ID"],
+        "X-APP-TOKEN": "wrong-token",
+    }
+    response = await create_test_client.get(
+        f"/stores/{store['uid']}",
+        json=store_dict(),
+        headers=headers,
+    )
+    assert response.status_code == 403

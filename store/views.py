@@ -16,10 +16,6 @@ class StoreAPI(MethodView):
 
     def __init__(self):
         self.STORES_PER_PAGE = 10
-        if (
-            request.method != "GET" and request.method != "DELETE"
-        ) and not request.json:
-            return fail, 400
 
     async def get(self, store_id):
         if store_id:
@@ -29,7 +25,7 @@ class StoreAPI(MethodView):
                     "store": store,
                     "links": StoreAPI().get_self_url(store),
                 }
-                return success(response), 201
+                return success(response), 200
             else:
                 return {}, 404
 
@@ -100,4 +96,4 @@ class StoreAPI(MethodView):
     @staticmethod
     def get_self_url(obj):
         uid = obj["uid"]
-        return [{"href": f"/store/{ uid }", "rel": "self"}]
+        return [{"href": f"/stores/{ uid }", "rel": "self"}]
