@@ -1,6 +1,7 @@
 import pytest
 from quart import current_app
 from sqlalchemy import create_engine, select
+from datetime import datetime, timedelta
 
 from db import metadata
 from app.models import app_table, app_access_table
@@ -108,3 +109,21 @@ async def test_app_token_generation(
     body = await response.json
     assert response.status_code == 403
     assert body.get("error_code") == "INCORRECT_CREDENTIALS"
+
+    # test expired token
+    # now = datetime.utcnow().replace(second=0, microsecond=0)
+    # expires = now + timedelta(days=-31)
+
+    # async with create_test_app.app_context():
+    #     conn = current_app.dbc
+    #     app_access_expire_query = app_access_table.update(
+    #         app_access_table.c.id == app_access_tokens[0]["id"]
+    #     ).values({"expires": expires})
+    #     await conn.execute(app_access_expire_query)
+
+    # rv = self.app.get(
+    #     "/stores/",
+    #     headers={"X-APP-ID": "pet_client", "X-APP-TOKEN": token},
+    #     content_type="application/json",
+    # )
+    # assert "TOKEN_EXPIRED" in str(rv.data)
