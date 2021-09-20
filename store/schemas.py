@@ -31,4 +31,4 @@ class StoreSchema(Schema):
         validate=[validate.Length(min=12, max=20)],
         required=True,
     )
-    live = fields.Boolean(required=False, default=True)
+    live = fields.Boolean(required=False)
