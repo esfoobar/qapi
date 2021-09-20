@@ -9,6 +9,7 @@ from .schemas import StoreSchema
 from utils.json_parser import get_json_payload
 from utils.api_responses import success, fail
 from app.decorators import app_required
+from utils.paginate import paginate
 
 
 class StoreAPI(MethodView):
@@ -33,34 +34,39 @@ class StoreAPI(MethodView):
             conn = current_app.dbc  # type: ignore
 
             page = int(request.args.get("page", 1))
-            stores_query = (
-                select(store_table)
-                .where(store_table.c.live == True)
-                .offset(page - 1)
-                .limit(self.STORES_PER_PAGE)
+            stores_query = select(store_table).where(store_table.c.live == True)
+            stores_paginate = await paginate(
+                conn, stores_query, page, self.STORES_PER_PAGE
             )
-            stores_records = await conn.fetch_all(query=stores_query)
-            pass
-            # response = {
-            #     "result": "ok",
-            #     "links": [{"href": "/stores/?page=%s" % page, "rel": "self"}],
-            #     "stores": stores_obj(stores),
-            # }
-            # if stores.has_prev:
-            #     response["links"].append(
-            #         {
-            #             "href": "/stores/?page=%s" % (stores.prev_num),
-            #             "rel": "previous",
-            #         }
-            #     )
-            # if stores.has_next:
-            #     response["links"].append(
-            #         {
-            #             "href": "/stores/?page=%s" % (stores.next_num),
-            #             "rel": "next",
-            #         }
-            #     )
-            # return jsonify(response), 200
+            stores_records = stores_paginate.items
+            stores_schema = StoreSchema(many=True)
+            stores_list = stores_schema.dump(stores_records)
+
+            response = {
+                "stores": stores_list,
+            }
+
+            response["links"] = [
+                {"href": f"/stores/?page={page}", "rel": "self"}
+            ]
+
+            if stores_paginate.has_previous:
+                response["links"].append(
+                    {
+                        "href": f"/stores/?page={stores_paginate.previous_page}",
+                        "rel": "previous",
+                    }
+                )
+
+            if stores_paginate.has_next:
+                response["links"].append(
+                    {
+                        "href": f"/stores/?page={stores_paginate.next_page}",
+                        "rel": "next",
+                    }
+                )
+
+            return success(response), 200
 
     async def post(self):
         conn = current_app.dbc  # type: ignore

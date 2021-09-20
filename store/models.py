@@ -19,5 +19,5 @@ store_table = Table(
     Column("state", String(2)),
     Column("zip_code", String(5)),
     Column("phone", String(20)),
-    Column("live", Boolean, index=True, default=True),
+    Column("live", Boolean, index=True, server_default="t"),
 )
