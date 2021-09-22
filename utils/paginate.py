@@ -1,10 +1,17 @@
 import math
+from typing import TYPE_CHECKING
 from sqlalchemy import select
 from sqlalchemy.sql.expression import func
 
+if TYPE_CHECKING:
+    from databases import Database
+    from sqlalchemy.sql.selectable import Select
+
 
 class Page(object):
-    def __init__(self, items, page, page_size, total):
+    def __init__(
+        self, items: list, page: int, page_size: int, total: int
+    ) -> None:
         self.items = items
         self.previous_page = None
         self.next_page = None
@@ -19,7 +26,9 @@ class Page(object):
         self.pages = int(math.ceil(total / float(page_size)))
 
 
-async def paginate(conn, query, page, page_size):
+async def paginate(
+    conn: "Database", query: "Select", page: int, page_size: int
+) -> Page:
     items_page_query = query.limit(page_size).offset((page - 1) * page_size)
     items = await conn.fetch_all(items_page_query)
     total_items_query = (

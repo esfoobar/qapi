@@ -179,3 +179,19 @@ async def test_stores_get(
     # next page
     next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
     assert next_page_item.get("href") == "/stores/?page=3"
+
+    # grab the third page and check there's previous and no next
+    response = await create_test_client.get(
+        next_page_item.get("href"), headers=_create_app_headers
+    )
+    body = await response.json
+
+    # previus page
+    next_page_item = _get_specific_dict_item(
+        body.get("links"), ("rel", "previous")
+    )
+    assert next_page_item.get("href") == "/stores/?page=2"
+
+    # next page
+    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    assert next_page_item == None
