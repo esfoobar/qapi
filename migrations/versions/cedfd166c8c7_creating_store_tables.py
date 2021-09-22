@@ -1,8 +1,8 @@
 """creating store tables
 
-Revision ID: 8e1cd095df76
+Revision ID: cedfd166c8c7
 Revises: 31eed0f89308
-Create Date: 2021-09-13 18:37:11.871217
+Create Date: 2021-09-20 18:04:07.905936
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "8e1cd095df76"
+revision = "cedfd166c8c7"
 down_revision = "31eed0f89308"
 branch_labels = None
 depends_on = None
@@ -28,7 +28,7 @@ def upgrade():
         sa.Column("state", sa.String(length=2), nullable=True),
         sa.Column("zip_code", sa.String(length=5), nullable=True),
         sa.Column("phone", sa.String(length=20), nullable=True),
-        sa.Column("live", sa.Boolean(), nullable=True),
+        sa.Column("live", sa.Boolean(), server_default="t", nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_store_live"), "store", ["live"], unique=False)

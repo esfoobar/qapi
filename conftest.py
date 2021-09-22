@@ -37,7 +37,15 @@ async def create_db():
     conn = engine.connect()
 
     db_test_name = os.environ["DATABASE_NAME"] + "_test"
-    conn.execute("commit")
+
+    # drop database if exists from previous run
+    try:
+        conn.execute("COMMIT")
+        conn.execute(f"DROP DATABASE {db_test_name} WITH (FORCE)")
+    except:
+        pass
+
+    conn.execute("COMMIT")
     conn.execute("CREATE DATABASE " + db_test_name)
     conn.close()
 
@@ -57,17 +65,8 @@ async def create_db():
     engine = create_engine(db_uri + db_name)
     conn = engine.connect()
 
-    # diconnect all users to test db
-    # https://stackoverflow.com/a/63493002
-    cmd = f"""
-    SELECT pg_terminate_backend(pg_stat_activity.pid)
-    FROM pg_stat_activity
-    WHERE pg_stat_activity.datname = '{db_test_name}'
-    AND pid <> pg_backend_pid();
-    """
-    conn.execute(cmd)
     conn.execute("COMMIT")
-    conn.execute("DROP DATABASE " + db_test_name)
+    conn.execute(f"DROP DATABASE {db_test_name} WITH (FORCE)")
     conn.close()
 
 

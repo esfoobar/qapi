@@ -1,3 +1,4 @@
+from typing import Optional
 import pytest
 from quart import current_app
 from sqlalchemy import create_engine, select
@@ -51,6 +52,9 @@ async def test_store_creation(
     create_test_client, create_test_tables, _create_app_headers
 ):
     # create store
+    # IMPORTANT: note that the _create_app_headers fixture is executed
+    #            after its called the firss time and any subsequent calls
+    #            to it just return the dict
     response = await create_test_client.post(
         "/stores/", json=store_dict(), headers=_create_app_headers
     )
@@ -117,3 +121,77 @@ async def test_store_get(
         headers=headers,
     )
     assert response.status_code == 403
+
+
+def _get_specific_dict_item(dict_list: list, k_v_pair: tuple) -> Optional[dict]:
+    k, v = k_v_pair
+    return next((item for item in dict_list if item[k] == v), None)
+
+
+@pytest.mark.asyncio
+async def test_stores_get(
+    create_test_client, create_test_tables, _create_app_headers
+):
+    # create one store
+    await create_test_client.post(
+        "/stores/", json=store_dict(), headers=_create_app_headers
+    )
+
+    # check the store is returned in list
+    response = await create_test_client.get(
+        "/stores/", headers=_create_app_headers
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert len(body.get("stores")) == 1
+    assert body.get("stores")[0]["city"] == store_dict()["city"]
+
+    # create 29 more stores
+    for i in range(1, 29):
+        await create_test_client.post(
+            "/stores/", json=store_dict(), headers=_create_app_headers
+        )
+
+    # check there's 10 stores and a first page
+    response = await create_test_client.get(
+        "/stores/", headers=_create_app_headers
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert len(body.get("stores")) == 10
+
+    # check there's a next page link
+    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    assert next_page_item.get("href") == "/stores/?page=2"
+
+    # grab the second page and check there's previous and next
+    response = await create_test_client.get(
+        next_page_item.get("href"), headers=_create_app_headers
+    )
+    body = await response.json
+
+    # previus page
+    next_page_item = _get_specific_dict_item(
+        body.get("links"), ("rel", "previous")
+    )
+    assert next_page_item.get("href") == "/stores/?page=1"
+
+    # next page
+    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    assert next_page_item.get("href") == "/stores/?page=3"
+
+    # grab the third page and check there's previous and no next
+    response = await create_test_client.get(
+        next_page_item.get("href"), headers=_create_app_headers
+    )
+    body = await response.json
+
+    # previus page
+    next_page_item = _get_specific_dict_item(
+        body.get("links"), ("rel", "previous")
+    )
+    assert next_page_item.get("href") == "/stores/?page=2"
+
+    # next page
+    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    assert next_page_item == None
