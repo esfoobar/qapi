@@ -1,3 +1,4 @@
+from typing import Optional
 import pytest
 from quart import current_app
 from sqlalchemy import create_engine, select
@@ -122,7 +123,7 @@ async def test_store_get(
     assert response.status_code == 403
 
 
-def _get_specific_dict_item(dict_list: list, k_v_pair: tuple) -> dict:
+def _get_specific_dict_item(dict_list: list, k_v_pair: tuple) -> Optional[dict]:
     k, v = k_v_pair
     return next((item for item in dict_list if item[k] == v), None)
 
