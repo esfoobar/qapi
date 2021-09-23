@@ -8,7 +8,7 @@ store_view = StoreAPI.as_view("store_api")
 
 store_app.add_url_rule(
     "/stores/",
-    defaults={"store_id": None},
+    defaults={"store_uid": None},
     view_func=store_view,
     methods=[
         "GET",
@@ -24,9 +24,7 @@ store_app.add_url_rule(
 )
 
 store_app.add_url_rule(
-    "/stores/<store_id>",
+    "/stores/<store_uid>",
     view_func=store_view,
-    methods=[
-        "GET",
-    ],
+    methods=["GET", "PUT"],
 )

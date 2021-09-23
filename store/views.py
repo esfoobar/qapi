@@ -19,9 +19,9 @@ class StoreAPI(MethodView):
     def __init__(self):
         self.STORES_PER_PAGE = 10
 
-    async def get(self, store_id):
-        if store_id:
-            store = await StoreAPI._get_store(uid=store_id)
+    async def get(self, store_uid):
+        if store_uid:
+            store = await StoreAPI._get_store(uid=store_uid)
             if store:
                 response = {
                     "store": store,
@@ -86,6 +86,29 @@ class StoreAPI(MethodView):
             "links": StoreAPI().get_self_url(store_obj),
         }
         return success(response), 201
+
+    async def put(self, store_uid):
+        conn = current_app.dbc  # type: ignore
+
+        store = await StoreAPI._get_store(uid=store_uid)
+        if not store:
+            return {}, 404
+
+        store_schema = StoreSchema()
+        json_data = await get_json_payload(request, store_schema)
+
+        store_update = store_table.update(
+            store_table.c.uid == store["uid"]
+        ).values(json_data)
+        await conn.execute(query=store_update)
+
+        # get from database
+        store_obj = await StoreAPI._get_store(uid=store["uid"])
+        response = {
+            "store": store_obj,
+            "links": StoreAPI().get_self_url(store_obj),
+        }
+        return success(response), 200
 
     @staticmethod
     async def _get_store(uid: str) -> Optional[dict]:
