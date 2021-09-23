@@ -20,11 +20,11 @@ class StoreSchema(Schema):
         required=True,
     )
     state = fields.Str(
-        validate=[validate.Length(2)],
+        validate=[validate.Length(equal=2)],
         required=True,
     )
     zip_code = fields.Str(
-        validate=[validate.Length(5)],
+        validate=[validate.Length(equal=5)],
         required=True,
     )
     phone = fields.Str(
