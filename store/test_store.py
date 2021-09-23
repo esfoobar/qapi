@@ -195,3 +195,48 @@ async def test_stores_get(
     # next page
     next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
     assert next_page_item == None
+
+
+@pytest.mark.asyncio
+async def test_stores_put(
+    create_test_client, create_test_tables, _create_app_headers
+):
+    # create one store
+    response = await create_test_client.post(
+        "/stores/", json=store_dict(), headers=_create_app_headers
+    )
+    body = await response.json
+    original_store = body["store"]
+
+    # modify store's neighborhood
+    modified_store = store_dict()
+    modified_store["neighborhood"] = "Upper West Side"
+
+    response = await create_test_client.put(
+        f"/stores/{original_store['uid']}",
+        json=modified_store,
+        headers=_create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert body["store"]["neighborhood"] == modified_store["neighborhood"]
+
+    # get an error on bad data
+    modified_store = store_dict()
+    modified_store["zip_code"] = "123"
+
+    response = await create_test_client.put(
+        f"/stores/{original_store['uid']}",
+        json=modified_store,
+        headers=_create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 400
+    assert body["error_code"] == "MALFORMED_DATA"
+
+    # check there's only one store in list (idempotency)
+    response = await create_test_client.get(
+        "/stores/", headers=_create_app_headers
+    )
+    body = await response.json
+    assert len(body.get("stores")) == 1
