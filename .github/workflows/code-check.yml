@@ -52,18 +52,18 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: false
           installer-parallel: true
-          virtualenvs-path: /tmp/.cache/venv/${{ matrix.python-version }}
+          virtualenvs-path: /tmp/poetry/venv/${{ matrix.python-version }}
 
       - name: Load cached venv
         id: cached-poetry-dependencies
         uses: actions/cache@v2
         with:
-          path: /tmp/.cache/venv/${{ matrix.python-version }}
+          path: /tmp/poetry/venv/${{ matrix.python-version }}
           key: venv-${{ github.repository }}-${{ matrix.python-version }}-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
         run: poetry install
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        if: stepspoetryd-poetry-dependencies.outputspoetry-hit != 'true'
 
       - name: Run Black
         run: |
