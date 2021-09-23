@@ -26,5 +26,5 @@ store_app.add_url_rule(
 store_app.add_url_rule(
     "/stores/<store_uid>",
     view_func=store_view,
-    methods=["GET", "PUT"],
+    methods=["GET", "PUT", "DELETE"],
 )
