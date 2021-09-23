@@ -63,7 +63,7 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
-        if: stepspoetryd-poetry-dependencies.outputspoetry-hit != 'true'
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
 
       - name: Run Black
         run: |
