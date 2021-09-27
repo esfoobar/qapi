@@ -110,6 +110,25 @@ class StoreAPI(MethodView):
         }
         return success(response), 200
 
+    async def delete(self, store_uid):
+        conn = current_app.dbc  # type: ignore
+
+        store = await StoreAPI._get_store(uid=store_uid)
+        if not store:
+            return {}, 404
+
+        store["live"] = False
+
+        store_update = store_table.update(
+            store_table.c.uid == store["uid"]
+        ).values(store)
+        await conn.execute(query=store_update)
+
+        # get from database
+        store_obj = await StoreAPI._get_store(uid=store["uid"])
+        response = {}
+        return success(response), 200
+
     @staticmethod
     async def _get_store(uid: str) -> Optional[dict]:
         conn = current_app.dbc  # type: ignore
