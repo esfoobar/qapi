@@ -240,3 +240,38 @@ async def test_stores_put(
     )
     body = await response.json
     assert len(body.get("stores")) == 1
+
+
+@pytest.mark.asyncio
+async def test_stores_delete(
+    create_test_client, create_test_tables, _create_app_headers
+):
+    # create one store
+    response = await create_test_client.post(
+        "/stores/", json=store_dict(), headers=_create_app_headers
+    )
+    body = await response.json
+    original_store = body["store"]
+
+    # delete store and check result 200
+    response = await create_test_client.delete(
+        f"/stores/{original_store['uid']}",
+        headers=_create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 200
+
+    # try to fetch same store get 404
+    response = await create_test_client.get(
+        f"/stores/{original_store['uid']}",
+        headers=_create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 404
+
+    # get stores list and it should be empty
+    response = await create_test_client.get(
+        "/stores/", headers=_create_app_headers
+    )
+    body = await response.json
+    assert len(body.get("stores")) == 0
