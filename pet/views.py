@@ -1,6 +1,8 @@
 from quart.views import MethodView
+import uuid
 
 from app.decorators import app_required
+from .models import pet_table
 
 
 class PetAPI(MethodView):
