@@ -20,7 +20,7 @@ pet_table = Table(
     Column("species", String(60)),
     Column("breed", String(60)),
     Column("age", Integer),
-    Column("store", Integer, ForeignKey("store.id")),
+    Column("store_id", Integer, ForeignKey("store.id")),
     Column("price", DECIMAL(precision=10, scale="2")),
     Column("sold", Boolean, index=True, server_default="f"),
     Column("received_date", DateTime(timezone=True)),
