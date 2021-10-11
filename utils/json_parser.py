@@ -11,8 +11,8 @@ if TYPE_CHECKING:
 
 async def get_json_payload(request: "Request", schema: "Schema") -> dict:
     try:
-        json_payload = schema.load(await request.get_json())
-        pass
+        request_payload = await request.get_json()
+        json_payload = schema.load(request_payload)
     except ValidationError as err:
         response = await make_response(
             jsonify(

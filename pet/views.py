@@ -1,5 +1,6 @@
+from quart import request, current_app
 from typing import Optional
-from quart.views import MethodView, request
+from quart.views import MethodView
 import uuid
 
 from app.decorators import app_required
@@ -21,7 +22,7 @@ class PetAPI(MethodView):
         json_data = await get_json_payload(request, pet_schema)
 
         # Check if store uid is valid
-        store = StoreAPI._get_store(uid=json_data.get("store_uid"))
+        store = await StoreAPI._get_store(uid=json_data.get("store_uid"))
         if not store:
             error_code = "STORE_NOT_FOUND"
             return fail(error_code=error_code), 400
