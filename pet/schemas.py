@@ -17,7 +17,7 @@ class PetSchema(Schema):
     age = fields.Int()
     store_uid = fields.Str(load_only=True, required=True)
     store = fields.Nested(StoreSchema, dump_only=True)
-    price = (fields.Float(),)
+    price = fields.Float()
     sold = fields.Boolean()
     received_date = fields.DateTime()
     sold_date = fields.DateTime()

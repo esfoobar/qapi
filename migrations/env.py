@@ -30,6 +30,7 @@ from db import metadata
 
 from app.models import *
 from store.models import *
+from pet.models import *
 
 target_metadata = metadata
 
