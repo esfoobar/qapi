@@ -1,23 +1,23 @@
 from quart import Blueprint
 
-from store.views import StoreAPI
+from pet.views import PetAPI
 
-store_app = Blueprint("store_app", __name__)
+pet_app = Blueprint("pet_app", __name__)
 
-store_view = StoreAPI.as_view("store_api")
+pet_view = PetAPI.as_view("pet_api")
 
-store_app.add_url_rule(
-    "/stores/",
-    defaults={"store_uid": None},
-    view_func=store_view,
+pet_app.add_url_rule(
+    "/pets/",
+    defaults={"pet_uid": None},
+    view_func=pet_view,
     methods=[
         "GET",
     ],
 )
 
-store_app.add_url_rule(
-    "/stores/",
-    view_func=store_view,
+pet_app.add_url_rule(
+    "/pets/",
+    view_func=pet_view,
     methods=[
         "POST",
     ],
