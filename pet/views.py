@@ -1,8 +1,13 @@
-from quart.views import MethodView
+from typing import Optional
+from quart.views import MethodView, request
 import uuid
 
 from app.decorators import app_required
 from .models import pet_table
+from .schemas import PetSchema
+from utils.json_parser import get_json_payload
+from utils.api_responses import success, fail
+from store.views import StoreAPI
 
 
 class PetAPI(MethodView):
@@ -13,7 +18,13 @@ class PetAPI(MethodView):
         conn = current_app.dbc  # type: ignore
 
         pet_schema = PetSchema()
-        json_data = await get_json_payload(request, store_schema)
+        json_data = await get_json_payload(request, pet_schema)
+
+        # Check if store uid is valid
+        store = StoreAPI._get_store(uid=json_data.get("store_uid"))
+        if not store:
+            error_code = "STORE_NOT_FOUND"
+            return fail(error_code=error_code), 400
 
         # store in the database
         json_data["uid"] = str(uuid.uuid4())
@@ -28,6 +39,7 @@ class PetAPI(MethodView):
         }
         return success(response), 201
 
+    @staticmethod
     async def _get_pet(uid: str) -> Optional[dict]:
         conn = current_app.dbc  # type: ignore
 
