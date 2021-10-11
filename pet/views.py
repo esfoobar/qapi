@@ -27,6 +27,9 @@ class PetAPI(MethodView):
             error_code = "STORE_NOT_FOUND"
             return fail(error_code=error_code), 400
 
+        # TODO: get store id for foreign key and remove store_uid
+        #       from json_payload
+
         # store in the database
         json_data["uid"] = str(uuid.uuid4())
         pet_insert = pet_table.insert().values(dict(json_data))
