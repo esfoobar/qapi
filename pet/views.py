@@ -54,7 +54,7 @@ class PetAPI(MethodView):
     async def _get_pet(uid: str) -> Optional[dict]:
         conn = current_app.dbc  # type: ignore
 
-        pet_query = select().where(
+        pet_query = pet_table.select().where(
             (pet_table.c.uid == uid) & (pet_table.c.live == True)
         )
         pet_record = await conn.fetch_one(query=pet_query)
@@ -65,7 +65,7 @@ class PetAPI(MethodView):
             pet_json = dict(pet_record)
 
         # fetch store data
-        store_query = select().where(
+        store_query = store_table.select().where(
             (store_table.c.id == pet_record["store_id"])
             & (store_table.c.live == True)
         )
