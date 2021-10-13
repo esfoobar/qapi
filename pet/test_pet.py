@@ -82,4 +82,15 @@ async def test_pet_creation(
         "/pets/", json=pet_dict(_create_store_uid), headers=_create_app_headers
     )
     body = await response.json
+    assert body["pet"]["name"] == pet_dict(_create_store_uid)["name"]
     assert response.status_code == 201
+
+    # missing required field
+    pet_dict_2 = pet_dict(_create_store_uid)
+    del pet_dict_2["name"]
+    response = await create_test_client.post(
+        "/pets/", json=pet_dict_2, headers=_create_app_headers
+    )
+    body = await response.json
+    assert body["error_code"] == "MALFORMED_DATA"
+    assert response.status_code == 400
