@@ -1,22 +1,12 @@
 import pytest
 from quart import current_app
-from sqlalchemy import create_engine, select
+from sqlalchemy import select
 from datetime import datetime, timedelta
 
 from db import metadata
 from app.models import app_table, app_access_table
-
-# Create this tests' tables
-@pytest.fixture
-def create_test_tables(create_db):
-    print("Creating Test Tables")
-    engine = create_engine(create_db["DB_URI"])
-    metadata.bind = engine
-    metadata.create_all()
-
-
-def app_dict():
-    return dict(app_id="myapp", app_secret="test123")
+from fixtures.common import create_test_tables
+from fixtures.app import app_dict
 
 
 @pytest.mark.asyncio
