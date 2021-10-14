@@ -7,7 +7,7 @@ from sqlalchemy import select
 from .models import store_table
 from .schemas import StoreSchema
 from utils.json_parser import get_json_payload
-from utils.api_responses import success, fail
+from utils.api_responses import success
 from app.decorators import app_required
 from utils.paginate import paginate
 

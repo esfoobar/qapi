@@ -1,50 +1,9 @@
 from typing import Optional
 import pytest
-from quart import current_app
-from sqlalchemy import create_engine, select
 
-from db import metadata
-
-
-# Create this tests' tables
-@pytest.fixture
-def create_test_tables(create_db):
-    print("Creating Test Tables")
-    engine = create_engine(create_db["DB_URI"])
-    metadata.bind = engine
-    metadata.create_all()
-
-
-def app_dict():
-    return dict(app_id="myapp", app_secret="test123")
-
-
-def store_dict():
-    return dict(
-        neighborhood="Chelsea",
-        street_address="123 Main Street",
-        city="New York",
-        state="NY",
-        zip_code="10001",
-        phone="212-555-1234",
-        live=True,
-    )
-
-
-@pytest.mark.asyncio
-@pytest.fixture
-async def _create_app_headers(create_test_client):
-    # app create
-    response = await create_test_client.post("/apps/", json=app_dict())
-
-    # get token
-    response = await create_test_client.post(
-        "/apps/access_token/",
-        json=app_dict(),
-    )
-    body = await response.json
-    token = body.get("token")
-    yield {"X-APP-ID": app_dict()["app_id"], "X-APP-TOKEN": token}
+from fixtures.common import create_test_tables
+from fixtures.app import app_dict, _create_app_headers
+from fixtures.store import store_dict, _create_store_uid
 
 
 @pytest.mark.asyncio
@@ -83,24 +42,20 @@ async def test_store_creation(
 
 @pytest.mark.asyncio
 async def test_store_get(
-    create_test_client, create_test_tables, _create_app_headers
+    create_test_client,
+    create_test_tables,
+    _create_app_headers,
+    _create_store_uid,
 ):
-    # create store
-    response = await create_test_client.post(
-        "/stores/", json=store_dict(), headers=_create_app_headers
-    )
-    body = await response.json
-    store = body["store"]
-
     # get the store
     response = await create_test_client.get(
-        f"/stores/{store['uid']}",
+        f"/stores/{_create_store_uid}",
         json=store_dict(),
         headers=_create_app_headers,
     )
     body = await response.json
     assert response.status_code == 200
-    assert body["store"]["uid"] == store["uid"]
+    assert body["store"]["uid"] == _create_store_uid
 
     # not found store
     response = await create_test_client.get(
@@ -116,7 +71,7 @@ async def test_store_get(
         "X-APP-TOKEN": "wrong-token",
     }
     response = await create_test_client.get(
-        f"/stores/{store['uid']}",
+        f"/stores/{_create_store_uid}",
         json=store_dict(),
         headers=headers,
     )
@@ -130,13 +85,11 @@ def _get_specific_dict_item(dict_list: list, k_v_pair: tuple) -> Optional[dict]:
 
 @pytest.mark.asyncio
 async def test_stores_get(
-    create_test_client, create_test_tables, _create_app_headers
+    create_test_client,
+    create_test_tables,
+    _create_app_headers,
+    _create_store_uid,
 ):
-    # create one store
-    await create_test_client.post(
-        "/stores/", json=store_dict(), headers=_create_app_headers
-    )
-
     # check the store is returned in list
     response = await create_test_client.get(
         "/stores/", headers=_create_app_headers
@@ -199,21 +152,17 @@ async def test_stores_get(
 
 @pytest.mark.asyncio
 async def test_stores_put(
-    create_test_client, create_test_tables, _create_app_headers
+    create_test_client,
+    create_test_tables,
+    _create_app_headers,
+    _create_store_uid,
 ):
-    # create one store
-    response = await create_test_client.post(
-        "/stores/", json=store_dict(), headers=_create_app_headers
-    )
-    body = await response.json
-    original_store = body["store"]
-
     # modify store's neighborhood
     modified_store = store_dict()
     modified_store["neighborhood"] = "Upper West Side"
 
     response = await create_test_client.put(
-        f"/stores/{original_store['uid']}",
+        f"/stores/{_create_store_uid}",
         json=modified_store,
         headers=_create_app_headers,
     )
@@ -226,7 +175,7 @@ async def test_stores_put(
     modified_store["zip_code"] = "123"
 
     response = await create_test_client.put(
-        f"/stores/{original_store['uid']}",
+        f"/stores/{_create_store_uid}",
         json=modified_store,
         headers=_create_app_headers,
     )
@@ -244,18 +193,14 @@ async def test_stores_put(
 
 @pytest.mark.asyncio
 async def test_stores_delete(
-    create_test_client, create_test_tables, _create_app_headers
+    create_test_client,
+    create_test_tables,
+    _create_app_headers,
+    _create_store_uid,
 ):
-    # create one store
-    response = await create_test_client.post(
-        "/stores/", json=store_dict(), headers=_create_app_headers
-    )
-    body = await response.json
-    original_store = body["store"]
-
     # delete store and check result 200
     response = await create_test_client.delete(
-        f"/stores/{original_store['uid']}",
+        f"/stores/{_create_store_uid}",
         headers=_create_app_headers,
     )
     body = await response.json
@@ -263,7 +208,7 @@ async def test_stores_delete(
 
     # try to fetch same store get 404
     response = await create_test_client.get(
-        f"/stores/{original_store['uid']}",
+        f"/stores/{_create_store_uid}",
         headers=_create_app_headers,
     )
     body = await response.json
