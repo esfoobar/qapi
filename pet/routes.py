@@ -8,17 +8,16 @@ pet_view = PetAPI.as_view("pet_api")
 
 pet_app.add_url_rule(
     "/pets/",
-    defaults={"pet_uid": None},
     view_func=pet_view,
     methods=[
-        "GET",
+        "POST",
     ],
 )
 
 pet_app.add_url_rule(
-    "/pets/",
+    "/pets/<pet_uid>",
     view_func=pet_view,
     methods=[
-        "POST",
+        "GET",
     ],
 )
