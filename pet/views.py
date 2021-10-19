@@ -44,6 +44,11 @@ class PetAPI(MethodView):
             pets_schema = PetSchema(many=True)
             pets_list = pets_schema.dump(pets_records)
 
+            # load stores
+            for pet in pets_list:
+                pet["store"] = await StoreAPI._get_store(id=pet["store_id"])
+                del pet["store_id"]
+
             response = {
                 "pets": pets_list,
             }
@@ -115,8 +120,9 @@ class PetAPI(MethodView):
         else:
             pet_json = dict(pet_record)
 
-        # fetch store data
+        # fetch store data and remove the internal ir
         pet_json["store"] = await StoreAPI._get_store(id=pet_record["store_id"])
+        del pet_json["store_id"]
 
         pet_obj = PetSchema().dump(pet_json)
         return pet_obj

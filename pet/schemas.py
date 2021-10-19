@@ -15,6 +15,9 @@ class PetSchema(Schema):
     )
     breed = fields.Str(validate=[validate.Length(min=1, max=60)], required=True)
     age = fields.Int()
+    store_id = fields.Int(
+        dump_only=True
+    )  # we only need this for store lookup on lists
     store_uid = fields.Str(load_only=True, required=True)
     store = fields.Nested(StoreSchema, dump_only=True)
     price = fields.Float()
