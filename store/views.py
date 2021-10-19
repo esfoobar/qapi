@@ -21,11 +21,11 @@ class StoreAPI(MethodView):
 
     async def get(self, store_uid):
         if store_uid:
-            store = await StoreAPI._get_store(uid=store_uid)
-            if store:
+            store_obj = await StoreAPI._get_store(uid=store_uid)
+            if store_obj:
                 response = {
-                    "store": store,
-                    "links": StoreAPI().get_self_url(store),
+                    "store": store_obj,
+                    "links": StoreAPI().get_self_url(store_obj),
                 }
                 return success(response), 200
             else:
@@ -90,20 +90,20 @@ class StoreAPI(MethodView):
     async def put(self, store_uid):
         conn = current_app.dbc  # type: ignore
 
-        store = await StoreAPI._get_store(uid=store_uid)
-        if not store:
+        store_obj = await StoreAPI._get_store(uid=store_uid)
+        if not store_obj:
             return {}, 404
 
         store_schema = StoreSchema()
         json_data = await get_json_payload(request, store_schema)
 
         store_update = store_table.update(
-            store_table.c.uid == store["uid"]
+            store_table.c.uid == store_obj["uid"]
         ).values(json_data)
         await conn.execute(query=store_update)
 
         # get from database
-        store_obj = await StoreAPI._get_store(uid=store["uid"])
+        store_obj = await StoreAPI._get_store(uid=store_obj["uid"])
         response = {
             "store": store_obj,
             "links": StoreAPI().get_self_url(store_obj),
@@ -113,28 +113,34 @@ class StoreAPI(MethodView):
     async def delete(self, store_uid):
         conn = current_app.dbc  # type: ignore
 
-        store = await StoreAPI._get_store(uid=store_uid)
-        if not store:
+        store_obj = await StoreAPI._get_store(uid=store_uid)
+        if not store_obj:
             return {}, 404
 
-        store["live"] = False
+        store_obj["live"] = False
 
         store_update = store_table.update(
-            store_table.c.uid == store["uid"]
-        ).values(store)
+            store_table.c.uid == store_obj["uid"]
+        ).values(store_obj)
         await conn.execute(query=store_update)
 
         # get from database
-        store_obj = await StoreAPI._get_store(uid=store["uid"])
         response = {}
         return success(response), 200
 
     @staticmethod
-    async def _get_store(uid: str) -> Optional[dict]:
+    async def _get_store(
+        uid: Optional[str], id: Optional[int]
+    ) -> Optional[dict]:
         conn = current_app.dbc  # type: ignore
 
+        if uid:
+            store_where = store_table.c.uid == uid
+        else:
+            store_where = store_table.c.id == id
+
         store_query = store_table.select().where(
-            (store_table.c.uid == uid) & (store_table.c.live == True)
+            store_where & (store_table.c.live == True)
         )
         store_record = await conn.fetch_one(query=store_query)
 
