@@ -115,6 +115,9 @@ class PetAPI(MethodView):
         else:
             pet_json = dict(pet_record)
 
+        # fetch store data
+        pet_json["store"] = await StoreAPI._get_store(id=pet_record["store_id"])
+
         pet_obj = PetSchema().dump(pet_json)
         return pet_obj
 

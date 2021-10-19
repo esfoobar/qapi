@@ -130,14 +130,16 @@ class StoreAPI(MethodView):
 
     @staticmethod
     async def _get_store(
-        uid: Optional[str], id: Optional[int]
+        uid: Optional[str] = None, id: Optional[int] = None
     ) -> Optional[dict]:
         conn = current_app.dbc  # type: ignore
 
         if uid:
             store_where = store_table.c.uid == uid
-        else:
+        elif id:
             store_where = store_table.c.id == id
+        else:
+            return None
 
         store_query = store_table.select().where(
             store_where & (store_table.c.live == True)
