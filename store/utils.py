@@ -1,6 +1,6 @@
 from quart import current_app, request
 from sqlalchemy import select
-from typing import Optional
+from typing import List, Optional
 
 from .models import store_table
 from .schemas import StoreSchema
@@ -33,7 +33,7 @@ async def get_store(
     return store_obj
 
 
-def get_self_url(obj: StoreSchema):
+def get_self_url(obj: dict) -> List[dict]:
     uid = obj["uid"]
     return [{"href": f"/stores/{ uid }", "rel": "self"}]
 

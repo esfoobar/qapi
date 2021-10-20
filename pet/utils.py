@@ -1,6 +1,6 @@
 from quart import request, current_app
 from sqlalchemy import select
-from typing import Optional
+from typing import List, Optional
 
 from .models import pet_table
 from .schemas import PetSchema
@@ -31,7 +31,7 @@ async def get_pet(uid: str) -> Optional[dict]:
     return pet_obj
 
 
-def get_self_url(obj: PetSchema):
+def get_self_url(obj: dict) -> List[dict]:
     uid = obj["uid"]
     return [{"href": f"/pets/{ uid }", "rel": "self"}]
 
