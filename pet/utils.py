@@ -6,6 +6,7 @@ from .models import pet_table
 from .schemas import PetSchema
 from utils.paginate import paginate
 from store.utils import get_store
+from store.models import store_table
 
 PETS_PER_PAGE = 10
 
@@ -39,7 +40,13 @@ def get_self_url(obj: dict) -> List[dict]:
 async def get_pets(store_uid: Optional[str] = None) -> dict:
     conn = current_app.dbc  # type: ignore
 
-    pets_query = select(pet_table).where(pet_table.c.live == True)
+    if store_uid:
+        pet_where = (pet_table.c.store_id == store_table.c.id) & (
+            store_table.c.uid == store_uid
+        )
+    else:
+        pet_where = pet_table.c.store_id == store_table.c.id
+    pets_query = select(pet_table).where(pet_where & (pet_table.c.live == True))
 
     page = int(request.args.get("page", 1))
     pets_paginate = await paginate(conn, pets_query, page, PETS_PER_PAGE)
