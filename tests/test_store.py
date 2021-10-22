@@ -1,9 +1,9 @@
-from typing import Optional
 import pytest
 
 from .fixtures.common import create_test_tables
 from .fixtures.app import app_dict, _create_app_headers
 from .fixtures.store import store_dict, _create_store_uid
+from .utils import get_specific_dict_item
 
 
 @pytest.mark.asyncio
@@ -75,11 +75,6 @@ async def test_store_get(
     assert response.status_code == 403
 
 
-def _get_specific_dict_item(dict_list: list, k_v_pair: tuple) -> Optional[dict]:
-    k, v = k_v_pair
-    return next((item for item in dict_list if item[k] == v), None)
-
-
 @pytest.mark.asyncio
 async def test_stores_get(
     create_test_client,
@@ -111,7 +106,7 @@ async def test_stores_get(
     assert len(body.get("stores")) == 10
 
     # check there's a next page link
-    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    next_page_item = get_specific_dict_item(body.get("links"), ("rel", "next"))
     assert next_page_item.get("href") == "/stores/?page=2"
 
     # grab the second page and check there's previous and next
@@ -121,13 +116,13 @@ async def test_stores_get(
     body = await response.json
 
     # previus page
-    next_page_item = _get_specific_dict_item(
+    next_page_item = get_specific_dict_item(
         body.get("links"), ("rel", "previous")
     )
     assert next_page_item.get("href") == "/stores/?page=1"
 
     # next page
-    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    next_page_item = get_specific_dict_item(body.get("links"), ("rel", "next"))
     assert next_page_item.get("href") == "/stores/?page=3"
 
     # grab the third page and check there's previous and no next
@@ -137,13 +132,13 @@ async def test_stores_get(
     body = await response.json
 
     # previus page
-    next_page_item = _get_specific_dict_item(
+    next_page_item = get_specific_dict_item(
         body.get("links"), ("rel", "previous")
     )
     assert next_page_item.get("href") == "/stores/?page=2"
 
     # next page
-    next_page_item = _get_specific_dict_item(body.get("links"), ("rel", "next"))
+    next_page_item = get_specific_dict_item(body.get("links"), ("rel", "next"))
     assert next_page_item == None
 
 

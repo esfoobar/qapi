@@ -1,7 +1,4 @@
-from typing import Optional
 import pytest
-from quart import current_app
-from sqlalchemy import create_engine, select
 
 from .fixtures.common import create_test_tables
 from .fixtures.app import app_dict, _create_app_headers
@@ -69,3 +66,20 @@ async def test_pet_get(
         headers=headers,
     )
     assert response.status_code == 403
+
+
+@pytest.mark.asyncio
+async def test_pets_get(
+    create_test_client,
+    create_test_tables,
+    _create_app_headers,
+    _create_store_uid,
+):
+    # check the store is returned in list
+    response = await create_test_client.get(
+        "/stores/", headers=_create_app_headers
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert len(body.get("stores")) == 1
+    assert body.get("stores")[0]["city"] == store_dict()["city"]
