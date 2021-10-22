@@ -3,10 +3,10 @@ import pytest
 from quart import current_app
 from sqlalchemy import create_engine, select
 
-from fixtures.common import create_test_tables
-from fixtures.app import app_dict, _create_app_headers
-from fixtures.store import store_dict, _create_store_uid
-from fixtures.pet import pet_dict, _create_pet_uid
+from .fixtures.common import create_test_tables
+from .fixtures.app import app_dict, _create_app_headers
+from .fixtures.store import store_dict, _create_store_uid
+from .fixtures.pet import pet_dict, _create_pet_uid
 
 
 @pytest.mark.asyncio

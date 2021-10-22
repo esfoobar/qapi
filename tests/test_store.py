@@ -1,9 +1,9 @@
 from typing import Optional
 import pytest
 
-from fixtures.common import create_test_tables
-from fixtures.app import app_dict, _create_app_headers
-from fixtures.store import store_dict, _create_store_uid
+from .fixtures.common import create_test_tables
+from .fixtures.app import app_dict, _create_app_headers
+from .fixtures.store import store_dict, _create_store_uid
 
 
 @pytest.mark.asyncio
