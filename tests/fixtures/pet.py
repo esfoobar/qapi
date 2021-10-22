@@ -15,14 +15,14 @@ def pet_dict(store_uid: str):
 
 @pytest.mark.asyncio
 @pytest.fixture
-async def _create_pet_uid(
-    create_test_client, _create_app_headers, _create_store_uid
+async def create_pet_uid(
+    create_test_client, create_app_headers, create_store_uid
 ):
     # create app and store
     response = await create_test_client.post(
         "/pets/",
-        json=pet_dict(store_uid=_create_store_uid),
-        headers=_create_app_headers,
+        json=pet_dict(store_uid=create_store_uid),
+        headers=create_app_headers,
     )
     body = await response.json
     yield body["pet"]["uid"]

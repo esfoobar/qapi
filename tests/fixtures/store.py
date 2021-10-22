@@ -15,10 +15,10 @@ def store_dict():
 
 @pytest.mark.asyncio
 @pytest.fixture
-async def _create_store_uid(create_test_client, _create_app_headers):
+async def create_store_uid(create_test_client, create_app_headers):
     # create app and store
     response = await create_test_client.post(
-        "/stores/", json=store_dict(), headers=_create_app_headers
+        "/stores/", json=store_dict(), headers=create_app_headers
     )
     body = await response.json
     yield body["store"]["uid"]
