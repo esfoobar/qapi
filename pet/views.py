@@ -28,7 +28,7 @@ class PetAPI(MethodView):
                     "pet": pet_obj,
                     "links": get_self_url(pet_obj),
                 }
-                return success(response), 201
+                return success(response), 200
             else:
                 return {}, 404
         else:

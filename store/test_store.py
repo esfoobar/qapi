@@ -50,7 +50,6 @@ async def test_store_get(
     # get the store
     response = await create_test_client.get(
         f"/stores/{_create_store_uid}",
-        json=store_dict(),
         headers=_create_app_headers,
     )
     body = await response.json
@@ -60,7 +59,6 @@ async def test_store_get(
     # not found store
     response = await create_test_client.get(
         f"/stores/not-found",
-        json=store_dict(),
         headers=_create_app_headers,
     )
     assert response.status_code == 404
@@ -72,7 +70,6 @@ async def test_store_get(
     }
     response = await create_test_client.get(
         f"/stores/{_create_store_uid}",
-        json=store_dict(),
         headers=headers,
     )
     assert response.status_code == 403

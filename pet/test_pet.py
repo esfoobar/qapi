@@ -6,18 +6,7 @@ from sqlalchemy import create_engine, select
 from fixtures.common import create_test_tables
 from fixtures.app import app_dict, _create_app_headers
 from fixtures.store import store_dict, _create_store_uid
-
-
-def pet_dict(store_uid: str):
-    return dict(
-        name="Mac",
-        species="Dog",
-        breed="Shitzu",
-        age=11,
-        store_uid=store_uid,
-        price="766.65",
-        received_date="2016-11-11T12:12:01Z",
-    )
+from fixtures.pet import pet_dict, _create_pet_uid
 
 
 @pytest.mark.asyncio
@@ -44,3 +33,39 @@ async def test_pet_creation(
     body = await response.json
     assert body["error_code"] == "MALFORMED_DATA"
     assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_pet_get(
+    create_test_client,
+    create_test_tables,
+    _create_app_headers,
+    _create_store_uid,
+    _create_pet_uid,
+):
+    # get the store
+    response = await create_test_client.get(
+        f"/pets/{_create_pet_uid}",
+        headers=_create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert body["pet"]["uid"] == _create_pet_uid
+
+    # not found pet
+    response = await create_test_client.get(
+        f"/pets/not-found",
+        headers=_create_app_headers,
+    )
+    assert response.status_code == 404
+
+    # bad credentials
+    headers = {
+        "X-APP-ID": _create_app_headers["X-APP-ID"],
+        "X-APP-TOKEN": "wrong-token",
+    }
+    response = await create_test_client.get(
+        f"/pets/{_create_pet_uid}",
+        headers=headers,
+    )
+    assert response.status_code == 403
