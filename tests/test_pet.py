@@ -116,7 +116,7 @@ async def test_pets_get(
     second_store_uid = body["store"]["uid"]
 
     # create 10 pets on second store
-    for i in range(1, 29):
+    for i in range(1, 6):
         await create_test_client.post(
             "/pets/",
             json=pet_dict(second_store_uid),
@@ -125,8 +125,12 @@ async def test_pets_get(
 
     # check we get 10 pets on second store
     response = await create_test_client.get(
-        f"/store/{second_store_uid}/pets/", headers=create_app_headers
+        f"/stores/{second_store_uid}/pets/", headers=create_app_headers
     )
     body = await response.json
-    # assert response.status_code == 200
-    # assert len(body.get("pets")) == 10
+    assert response.status_code == 200
+    assert len(body.get("pets")) == 5
+    assert (
+        body.get("pets")[0].get("store").get("neighborhood")
+        == second_store["neighborhood"]
+    )
