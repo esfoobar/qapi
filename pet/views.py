@@ -67,3 +67,56 @@ class PetAPI(MethodView):
             "links": get_self_url(pet_obj),
         }
         return success(response), 201
+
+    async def put(self, pet_uid):
+        conn = current_app.dbc  # type: ignore
+
+        pet_obj = await get_pet(uid=pet_uid)
+        if not pet_obj:
+            return {}, 404
+
+        pet_schema = PetSchema()
+        json_data = await get_json_payload(request, pet_schema)
+
+        # Check if store uid is valid
+        store_query = store_table.select().where(
+            (store_table.c.uid == json_data.get("store_uid"))
+            & (store_table.c.live == True)
+        )
+        store_record = await conn.fetch_one(query=store_query)
+        if not store_record:
+            error_code = "STORE_NOT_FOUND"
+            return fail(error_code=error_code), 400
+
+        # remove store_uid from json_payload and store id
+        del json_data["store_uid"]
+        json_data["store_id"] = store_record["id"]
+
+        pet_update = pet_table.update(pet_table.c.uid == pet_obj["uid"]).values(
+            json_data
+        )
+        await conn.execute(query=pet_update)
+
+        # get from database
+        pet_obj = await get_pet(uid=pet_obj["uid"])
+        response = {
+            "pet": pet_obj,
+            "links": get_self_url(pet_obj),
+        }
+        return success(response), 200
+
+    async def delete(self, pet_uid):
+        conn = current_app.dbc  # type: ignore
+
+        pet_obj = await get_pet(uid=pet_uid)
+        if not pet_obj:
+            return {}, 404
+
+        pet_update = pet_table.update(pet_table.c.uid == pet_obj["uid"]).values(
+            live=False
+        )
+        await conn.execute(query=pet_update)
+
+        # get from database
+        response = {}
+        return success(response), 200

@@ -84,11 +84,9 @@ class StoreAPI(MethodView):
         if not store_obj:
             return {}, 404
 
-        store_obj["live"] = False
-
         store_update = store_table.update(
             store_table.c.uid == store_obj["uid"]
-        ).values(store_obj)
+        ).values(live=False)
         await conn.execute(query=store_update)
 
         # get from database
