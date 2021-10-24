@@ -77,7 +77,7 @@ async def test_pets_get(
     create_store_uid,
     create_pet_uid,
 ):
-    # check the store is returned in list
+    # check the pet is returned in list
     response = await create_test_client.get(
         "/pets/", headers=create_app_headers
     )
@@ -134,3 +134,80 @@ async def test_pets_get(
         body.get("pets")[0].get("store").get("neighborhood")
         == second_store["neighborhood"]
     )
+
+
+@pytest.mark.asyncio
+async def test_pets_put(
+    create_test_client,
+    create_test_tables,
+    create_app_headers,
+    create_store_uid,
+    create_pet_uid,
+):
+    # modify store's neighborhood
+    modified_pet = pet_dict(create_store_uid)
+    modified_pet["breed"] = "Maltese"
+
+    response = await create_test_client.put(
+        f"/pets/{create_pet_uid}",
+        json=modified_pet,
+        headers=create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 200
+    assert body["pet"]["breed"] == modified_pet["breed"]
+
+    # inexistent store on put
+    modified_pet["store_uid"] = "not-found"
+    response = await create_test_client.put(
+        f"/pets/{create_pet_uid}",
+        json=modified_pet,
+        headers=create_app_headers,
+    )
+    body = await response.json
+    assert body["error_code"] == "STORE_NOT_FOUND"
+
+    # check there's only one pet in list (idempotency)
+    modified_pet["age"] = "15"
+    await create_test_client.put(
+        f"/pets/{create_pet_uid}",
+        json=modified_pet,
+        headers=create_app_headers,
+    )
+    response = await create_test_client.get(
+        "/pets/", headers=create_app_headers
+    )
+    body = await response.json
+    assert len(body.get("pets")) == 1
+
+
+@pytest.mark.asyncio
+async def test_pets_delete(
+    create_test_client,
+    create_test_tables,
+    create_app_headers,
+    create_store_uid,
+    create_pet_uid,
+):
+    # delete store and check result 200
+    response = await create_test_client.delete(
+        f"/pets/{create_pet_uid}",
+        headers=create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 200
+
+    # try to fetch same pet get 404
+    response = await create_test_client.get(
+        f"/stores/{create_pet_uid}",
+        headers=create_app_headers,
+    )
+    body = await response.json
+    assert response.status_code == 404
+
+    # get pets list and it should be empty
+    response = await create_test_client.get(
+        "/pets/", headers=create_app_headers
+    )
+    body = await response.json
+    assert len(body.get("pets")) == 0
