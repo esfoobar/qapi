@@ -72,6 +72,7 @@ Usually, we need to create a database for the application we’re writing and a 
   - Run `poetry install`
   - Restart VSCode for changes to be applied
   - After restart:
+    - Make sure to select the poetry Python interpreter for VSCode
     - Do the first migration: `poetry run alembic upgrade head`
 - To run the application: `poetry run quart run`
   - The codespace will give you a private URL for your application

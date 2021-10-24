@@ -14,7 +14,9 @@
         "QUART_ENV": "development",
       },
       "args": [
-        "run"
+        "run",
+        "--host",
+        "0.0.0.0"
       ],
       "jinja": true
     },

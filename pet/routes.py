@@ -22,3 +22,11 @@ pet_app.add_url_rule(
         "POST",
     ],
 )
+
+pet_app.add_url_rule(
+    "/pets/<pet_uid>",
+    view_func=pet_view,
+    methods=[
+        "GET",
+    ],
+)

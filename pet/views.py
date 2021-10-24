@@ -7,15 +7,33 @@ from sqlalchemy import select
 from app.decorators import app_required
 from .models import pet_table
 from .schemas import PetSchema
+from .utils import get_pet, get_pets, get_self_url
 from utils.json_parser import get_json_payload
 from utils.api_responses import success, fail
 from store.models import store_table
-from store.views import StoreAPI
 
 
 class PetAPI(MethodView):
 
     decorators = [app_required]
+
+    def __init__(self):
+        self.PETS_PER_PAGE = 10
+
+    async def get(self, pet_uid):
+        if pet_uid:
+            pet_obj = await get_pet(uid=pet_uid)
+            if pet_obj:
+                response = {
+                    "pet": pet_obj,
+                    "links": get_self_url(pet_obj),
+                }
+                return success(response), 200
+            else:
+                return {}, 404
+        else:
+            response = await get_pets()
+            return success(response), 200
 
     async def post(self):
         conn = current_app.dbc  # type: ignore
@@ -43,39 +61,9 @@ class PetAPI(MethodView):
         await conn.execute(query=pet_insert)
 
         # get from database
-        pet_obj = await PetAPI._get_pet(uid=json_data["uid"])
+        pet_obj = await get_pet(uid=json_data["uid"])
         response = {
             "pet": pet_obj,
-            "links": PetAPI().get_self_url(pet_obj),
+            "links": get_self_url(pet_obj),
         }
         return success(response), 201
-
-    @staticmethod
-    async def _get_pet(uid: str) -> Optional[dict]:
-        conn = current_app.dbc  # type: ignore
-
-        pet_query = pet_table.select().where(
-            (pet_table.c.uid == uid) & (pet_table.c.live == True)
-        )
-        pet_record = await conn.fetch_one(query=pet_query)
-
-        if not pet_record:
-            return None
-        else:
-            pet_json = dict(pet_record)
-
-        # fetch store data
-        store_query = store_table.select().where(
-            (store_table.c.id == pet_record["store_id"])
-            & (store_table.c.live == True)
-        )
-        store_record = await conn.fetch_one(query=store_query)
-        pet_json["store"] = await StoreAPI._get_store(uid=store_record["uid"])
-
-        pet_obj = PetSchema().dump(pet_json)
-        return pet_obj
-
-    @staticmethod
-    def get_self_url(obj):
-        uid = obj["uid"]
-        return [{"href": f"/pets/{ uid }", "rel": "self"}]

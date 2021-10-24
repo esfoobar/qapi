@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 
 from db import metadata
 from app.models import app_table, app_access_table
-from fixtures.common import create_test_tables
-from fixtures.app import app_dict
+from .fixtures.common import create_test_tables
+from .fixtures.app import app_dict
 
 
 @pytest.mark.asyncio

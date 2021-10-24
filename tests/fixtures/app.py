@@ -7,7 +7,7 @@ def app_dict():
 
 @pytest.mark.asyncio
 @pytest.fixture
-async def _create_app_headers(create_test_client):
+async def create_app_headers(create_test_client):
     # app create
     response = await create_test_client.post("/apps/", json=app_dict())
 
