@@ -3,14 +3,14 @@ from quart import current_app
 from sqlalchemy import select
 from datetime import datetime, timedelta
 
-from db import metadata
 from app.models import app_table, app_access_table
-from .fixtures.common import create_test_tables
 from .fixtures.app import app_dict
 
 
 @pytest.mark.asyncio
-async def test_app_creation(create_test_client, create_test_tables):
+async def test_app_creation(
+    create_test_client,
+):
     # basic create
     response = await create_test_client.post("/apps/", json=app_dict())
     body = await response.json
@@ -45,7 +45,8 @@ async def test_app_creation(create_test_client, create_test_tables):
 
 @pytest.mark.asyncio
 async def test_app_token_generation(
-    create_test_app, create_test_client, create_test_tables
+    create_test_app,
+    create_test_client,
 ):
     # create app
     response = await create_test_client.post("/apps/", json=app_dict())

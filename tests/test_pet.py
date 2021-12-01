@@ -1,6 +1,5 @@
 import pytest
 
-from .fixtures.common import create_test_tables
 from .fixtures.app import app_dict, create_app_headers
 from .fixtures.store import store_dict, create_store_uid
 from .fixtures.pet import pet_dict, create_pet_uid
@@ -10,7 +9,6 @@ from tests.utils import get_specific_dict_item
 @pytest.mark.asyncio
 async def test_pet_creation(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
 ):
@@ -36,7 +34,6 @@ async def test_pet_creation(
 @pytest.mark.asyncio
 async def test_pet_get(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
     create_pet_uid,
@@ -72,7 +69,6 @@ async def test_pet_get(
 @pytest.mark.asyncio
 async def test_pets_get(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
     create_pet_uid,
@@ -139,7 +135,6 @@ async def test_pets_get(
 @pytest.mark.asyncio
 async def test_pets_put(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
     create_pet_uid,
@@ -184,7 +179,6 @@ async def test_pets_put(
 @pytest.mark.asyncio
 async def test_pets_delete(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
     create_pet_uid,
