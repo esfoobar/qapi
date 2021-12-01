@@ -1,15 +1,12 @@
 import pytest
 
-from .fixtures.common import create_test_tables
 from .fixtures.app import app_dict, create_app_headers
 from .fixtures.store import store_dict, create_store_uid
 from .utils import get_specific_dict_item
 
 
 @pytest.mark.asyncio
-async def test_store_creation(
-    create_test_client, create_test_tables, create_app_headers
-):
+async def test_store_creation(create_test_client, create_app_headers):
     # create store
     # IMPORTANT: note that the create_app_headers fixture is executed
     #            after its called the firss time and any subsequent calls
@@ -43,7 +40,6 @@ async def test_store_creation(
 @pytest.mark.asyncio
 async def test_store_get(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
 ):
@@ -78,7 +74,6 @@ async def test_store_get(
 @pytest.mark.asyncio
 async def test_stores_get(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
 ):
@@ -145,7 +140,6 @@ async def test_stores_get(
 @pytest.mark.asyncio
 async def test_stores_put(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
 ):
@@ -186,7 +180,6 @@ async def test_stores_put(
 @pytest.mark.asyncio
 async def test_stores_delete(
     create_test_client,
-    create_test_tables,
     create_app_headers,
     create_store_uid,
 ):

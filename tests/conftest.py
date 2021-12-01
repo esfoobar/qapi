@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 load_dotenv(".quartenv")
 
 from application import create_app
+from db import metadata
 
 # We need our own module-level event_loop
 # since pytest's is a function-level fixture
@@ -48,6 +49,11 @@ async def create_db():
     conn.execute("COMMIT")
     conn.execute("CREATE DATABASE " + db_test_name)
     conn.close()
+
+    print("Creating test tables")
+    engine = create_engine(db_uri + db_test_name)
+    metadata.bind = engine
+    metadata.create_all()
 
     # TESTING flag disables error catching during request handling,
     # so that you get better error reports when performing test requests
