@@ -2,7 +2,7 @@
 
 ![Code Check](https://github.com/esfoobar/qapi/workflows/Code%20Checks/badge.svg)
 
-The Quart Pets API application. Requires `python 3.7` or higher.
+The Quart Pets API application. Requires `python 3.7` or higher
 
 ## Local Development
 
